@@ -1,6 +1,8 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/3914063ca1def738fcca/maintainability)](https://codeclimate.com/github/nikolaenkoOleg/frontend-project-lvl1/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7f0846eefd8f257b5f66/maintainability)](https://codeclimate.com/github/nikolaenkoOleg/frontend-project-lvl2/maintainability)
 
-[![Build Status](https://travis-ci.org/nikolaenkoOleg/frontend-project-lvl1.svg?branch=master)](https://travis-ci.org/nikolaenkoOleg/frontend-project-lvl1)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/7f0846eefd8f257b5f66/test_coverage)](https://codeclimate.com/github/nikolaenkoOleg/frontend-project-lvl2/test_coverage)
+
+[![Build Status](https://travis-ci.org/nikolaenkoOleg/frontend-project-lvl2.svg?branch=master)](https://travis-ci.org/nikolaenkoOleg/frontend-project-lvl2)
 
 
 ##

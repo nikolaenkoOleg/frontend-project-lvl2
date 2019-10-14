@@ -4,7 +4,7 @@
   "description": "Hexlet project 2",
   "main": "gendiff.js",
   "bin": {
-    "gendiff": "dist/bin/bin-gendiff.js"
+    "gendiff": "dist/bin/"
   },
   "dependencies": {
     "commander": "^3.0.2",
@@ -19,10 +19,11 @@
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-babel": "^5.3.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "jest": "^24.9.0"
   },
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build"
   },
