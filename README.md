@@ -27,5 +27,6 @@ $ make test
 Asciinema:
 
 ```
-https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp
+json - https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp
+yaml - https://asciinema.org/a/xYzVcb9xBATo6ZSrfVzOjG37s
 ```

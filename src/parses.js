@@ -1,17 +1,6 @@
-import fs from 'fs';
-import path from 'path';
 import _ from 'lodash';
 
-export default (firstConfig, secondConfig) => {
-  const pathToFirstFile = path.isAbsolute(firstConfig)
-    ? firstConfig : path.resolve(firstConfig);
-
-  const pathToSecondFile = path.isAbsolute(secondConfig)
-    ? secondConfig : path.resolve(secondConfig);
-
-  const beforeData = JSON.parse(fs.readFileSync(pathToFirstFile).toString());
-  const afterData = JSON.parse(fs.readFileSync(pathToSecondFile).toString());
-
+export default (beforeData, afterData) => {
   const processedBeforeData = Object.keys(beforeData).map((key) => {
     if (_.has(afterData, key)) {
       if (beforeData[key] === afterData[key]) {
