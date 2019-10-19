@@ -2,6 +2,7 @@ import program from 'commander';
 import path from 'path';
 import compareJson from './compareJson';
 import compareYaml from './compareYaml';
+import compareIni from './compareIni';
 
 export default () => {
   program
@@ -14,6 +15,7 @@ export default () => {
       const parses = {
         yaml: () => compareYaml(firstConfig, secondConfig),
         json: () => compareJson(firstConfig, secondConfig),
+        ini: () => compareIni(firstConfig, secondConfig),
       };
 
       console.log(parses[fileType](firstConfig, secondConfig));
