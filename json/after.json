@@ -1,5 +1,11 @@
 {
   "timeout": 20,
   "verbose": true,
-  "host": "hexlet.io"
+  "host": "hexlet.io",
+  "follow": {
+    "key1": "123",
+    "key2": "321",
+    "key3": "901"
+  },
+  "newKey": "newValue"
 }
