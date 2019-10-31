@@ -1,8 +1,5 @@
 import program from 'commander';
-import path from 'path';
-import compareJson from './compareJson';
-import compareYaml from './compareYaml';
-import compareIni from './compareIni';
+import compare from './formatManeger';
 
 export default () => {
   program
@@ -11,14 +8,7 @@ export default () => {
     .option('-f, --format [type]', 'output format')
     .arguments('<firstConfig> <secondConfig>')
     .action((firstConfig, secondConfig) => {
-      const fileType = path.extname(firstConfig).replace('.', '');
-      const parses = {
-        yaml: () => compareYaml(firstConfig, secondConfig),
-        json: () => compareJson(firstConfig, secondConfig),
-        ini: () => compareIni(firstConfig, secondConfig),
-      };
-
-      console.log(parses[fileType](firstConfig, secondConfig));
+      console.log(compare(firstConfig, secondConfig));
     });
 
   program.parse(process.argv);

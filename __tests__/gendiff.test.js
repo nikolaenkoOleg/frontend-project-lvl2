@@ -1,21 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import compareJson from '../src/compareJson';
-import compareYaml from '../src/compareYaml';
-import compareIni from '../src/compareIni';
+import compareFiles from '../src/formatManeger';
 
-const pathToFixture = path.resolve('__tests__/__fixtures__/result.json');
+const pathToFixture = path.resolve('__tests__/__fixtures__/result.txt');
 const result = fs.readFileSync(pathToFixture).toString();
 
-test('compare 2 plain json', () => {
-  expect(compareJson('./json/before.json', './json/after.json')).toBe(result.trim());
+test('compare 2 json', () => {
+  expect(compareFiles('./json/before.json', './json/after.json').replace(/\s/g, '')).toEqual(result.replace(/\s/g, ''));
 });
 
-// test('compare 2 plain yaml', () => {
-//   expect(compareYaml('./yaml/before.yaml', './yaml/after.yaml')).toBe(result.trim());
-// });
+test('compare 2 yaml', () => {
+  expect(compareFiles('./yaml/before.yaml', './yaml/after.yaml').replace(/\s/g, '')).toEqual(result.replace(/\s/g, ''));
+});
 
-// test('compare 2 plain ini', () => {
-//   expect(compareIni('./ini/before.ini', './ini/after.ini')).toBe(result.trim());
-// });
+test('compare 2 ini', () => {
+  expect(compareFiles('./ini/before.ini', './ini/after.ini').replace(/\s/g, '')).toEqual(result.replace(/\s/g, ''));
+});
 

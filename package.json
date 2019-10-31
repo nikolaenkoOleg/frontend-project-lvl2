@@ -7,6 +7,7 @@
     "gendiff": "dist/bin/"
   },
   "dependencies": {
+    "@types/ini": "^1.3.30",
     "commander": "^3.0.2",
     "ini": "^1.3.5",
     "js-yaml": "^3.13.1",
