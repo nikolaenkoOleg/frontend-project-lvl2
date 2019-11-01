@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import formatter from './painFormatter';
 
-const getNode = (name, beforeValue, afterValue, children, status) => ({
+const getNode = (name, beforeValue = '', afterValue = '', children = '', status) => ({
   name,
   beforeValue,
   afterValue,
@@ -10,19 +11,17 @@ const getNode = (name, beforeValue, afterValue, children, status) => ({
 
 const getSoloAst = (data) => Object.keys(data).map((key) => getNode(key, data[key], '', '', 'unchanged'));
 
-export default (beforeData, afterData) => {
+export default (beforeData, afterData, format) => {
   const buildAst = (before = {}, after = {}) => {
     const keys = Object.keys(before).concat(Object.keys(after));
     const filteredKeys = _.uniqWith(keys, _.isEqual).sort();
 
     return filteredKeys.map((key) => {
-      if (_.has(before, key) && _.has(after, key)) { // если ключ есть в обоих объектах
-        if (typeof before[key] === 'object' && typeof after[key] === 'object') { // если тип значения ключа объект в обоих объектах
+      if (_.has(before, key) && _.has(after, key)) {
+        if (typeof before[key] === 'object' && typeof after[key] === 'object') {
           return getNode(key, '', '', buildAst(before[key], after[key]), 'unchanged');
         }
-        /*
-        если тип значения ключа отличается в разных объектах
-        */
+
         if (typeof before[key] === 'object' && typeof after[key] !== 'object') {
           return getNode(key, getSoloAst(before[key]), after[key], '', 'value type changed');
         }
@@ -31,16 +30,13 @@ export default (beforeData, afterData) => {
           return getNode(key, before[key], getSoloAst(after[key]), '', 'value type changed');
         }
 
-        // если значения ключа одинаковы
         if (before[key] === after[key]) {
           return getNode(key, before[key], after[key], '', 'unchanged');
         }
 
-        // если разные значения
         return getNode(key, before[key], after[key], '', 'edited');
       }
 
-      // если ключ есть в before но нет в after
       if (_.has(before, key) && !_.has(after, key)) {
         if (typeof before[key] === 'object') {
           return getNode(key, '', '', getSoloAst(before[key]), 'deleted');
@@ -48,7 +44,6 @@ export default (beforeData, afterData) => {
         return getNode(key, before[key], after[key], '', 'deleted');
       }
 
-      // если ключ есть в after но нет в before
       if (!_.has(before, key) && _.has(after, key)) {
         if (typeof after[key] === 'object') {
           return getNode(key, '', '', getSoloAst(after[key]), 'added');
@@ -134,6 +129,11 @@ export default (beforeData, afterData) => {
   }, {});
 
   const ast = buildAst(beforeData, afterData);
+
+  if (format) {
+    return formatter(ast);
+  }
+
   const rendered = render(ast);
   const quote = /"/g;
   const dot = /,/g;

@@ -1,14 +1,14 @@
 import program from 'commander';
-import compare from './formatManeger';
+import compare from './extensionManager';
 
 export default () => {
   program
     .version('1.0.0')
     .description('Compares two configuration files and shows a difference.')
     .option('-f, --format [type]', 'output format')
-    .arguments('<firstConfig> <secondConfig>')
-    .action((firstConfig, secondConfig) => {
-      console.log(compare(firstConfig, secondConfig));
+    .arguments('<firstConfig> <secondConfig> [format]')
+    .action((firstConfig, secondConfig, format) => {
+      console.log(compare(firstConfig, secondConfig, format));
     });
 
   program.parse(process.argv);
