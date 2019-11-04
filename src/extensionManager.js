@@ -2,7 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import ini from 'ini';
-import parse from './parses';
+import astBuilder from './formatters/astBuilder';
+import astRender from './formatters/astRender';
+import plainRender from './formatters/plainRender';
 
 export default (firstConfig, secondConfig, format) => {
   const pathToFirstFile = path.isAbsolute(firstConfig)
@@ -11,7 +13,7 @@ export default (firstConfig, secondConfig, format) => {
   const pathToSecondFile = path.isAbsolute(secondConfig)
     ? secondConfig : path.resolve(secondConfig);
 
-  const fileType = path.extname(firstConfig).replace('.', '');
+  const fileExtension = path.extname(firstConfig).replace('.', '');
 
   const extensionActions = [
     {
@@ -19,8 +21,11 @@ export default (firstConfig, secondConfig, format) => {
       action: (firstPath, secondPath, outputFormat) => {
         const beforeData = JSON.parse(fs.readFileSync(firstPath).toString());
         const afterData = JSON.parse(fs.readFileSync(secondPath).toString());
+        if (outputFormat) {
+          return plainRender(astBuilder(beforeData, afterData));
+        }
 
-        return parse(beforeData, afterData, outputFormat);
+        return astRender(astBuilder(beforeData, afterData));
       },
     },
     {
@@ -28,8 +33,11 @@ export default (firstConfig, secondConfig, format) => {
       action: (firstPath, secondPath, outputFormat) => {
         const beforeData = yaml.safeLoad(fs.readFileSync(firstPath).toString());
         const afterData = yaml.safeLoad(fs.readFileSync(secondPath).toString());
+        if (outputFormat) {
+          return plainRender(astBuilder(beforeData, afterData));
+        }
 
-        return parse(beforeData, afterData, outputFormat);
+        return astRender(astBuilder(beforeData, afterData));
       },
     },
     {
@@ -37,13 +45,17 @@ export default (firstConfig, secondConfig, format) => {
       action: (firstPath, secondPath, outputFormat) => {
         const beforeData = ini.parse(fs.readFileSync(firstPath).toString());
         const afterData = ini.parse(fs.readFileSync(secondPath).toString());
+        if (outputFormat) {
+          return plainRender(astBuilder(beforeData, afterData));
+        }
 
-        return parse(beforeData, afterData, outputFormat);
+        return astRender(astBuilder(beforeData, afterData));
       },
     },
   ];
 
-  const getExtensionAction = (arg) => extensionActions.find(({ name }) => name(arg));
-  const { action } = getExtensionAction(fileType);
+  const getExtensionAction = (extension) => extensionActions.find(({ name }) => name(extension));
+  const { action } = getExtensionAction(fileExtension);
+
   return action(pathToFirstFile, pathToSecondFile, format);
 };

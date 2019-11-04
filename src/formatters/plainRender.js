@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 // # Данный вывод просто пример, он не является отражением данных из других шагов
 // $ gendiff --format plain before.json after.json
 
@@ -32,42 +34,52 @@
 // export default findFilesByName;
 
 export default (ast) => {
-  const render = (tree, path) => {
-    console.log('приход', tree);
-    return tree.reduce((acc, {
-      name,
-      beforeValue,
-      afterValue,
-      children,
-      status,
-    }) => {
-      path.push(name);
-
-      if (children) {
-        console.log('то, что передаем', children);
-        acc.push(render(children, path));
-        return acc;
-      }
-
-      switch (status) {
-        case 'edited':
-          acc.push(`Property '${path.join('.')}' was updated. From ${beforeValue} to ${afterValue}.`);
-          return acc;
-        case 'unchanged':
-          return acc;
-        case 'deleted':
-          acc.push(`Property '${path.join('.')}' was removed.`);
-          return acc;
-        case 'added':
-          acc.push(`Property '${path.join('.')}' was added with value: ${typeof afterValue === 'object' ? '[complex value]' : afterValue}.`);
-          return acc;
-        default:
-          break;
-      }
-
+  const render = (tree, paths) => tree.reduce((acc, {
+    name,
+    beforeValue,
+    afterValue,
+    children,
+    status,
+  }) => {
+    if (children) {
+      paths.push(name);
+      console.log('передаем детей', children);
+      acc.push(render(children, paths));
       return acc;
-    }, []);
-  };
+    }
 
-  console.log(render(ast, []));
+    switch (status) {
+      case 'value type changed':
+        if (typeof afterValue === 'object') {
+          acc.push(`Property '${paths.join('.')}.${name}' was updated. From ${beforeValue} to '[complex value]'`);
+
+          return acc;
+        }
+
+        acc.push(`Property '${paths.join('.')}.${name}' was updated. From ${afterValue} to '[complex value]'`);
+
+        return acc;
+      case 'edited':
+        acc.push(`Property '${paths.join('.')}.${name}' was updated. From ${beforeValue} to ${afterValue}.`);
+
+        return acc;
+      case 'unchanged':
+        return acc;
+      case 'deleted':
+        acc.push(`Property '${paths.join('.')}.${name}' was removed.`);
+
+        return acc;
+      case 'added':
+        acc.push(`Property '${paths.join('.')}.${name}' was added with value: ${typeof afterValue === 'object' ? '[complex value]' : afterValue}.`);
+
+        return acc;
+      default:
+        break;
+    }
+
+    return acc;
+  }, []);
+
+  const result = _.flattenDeep(render(ast, [])).join('\n');
+  console.log(result);
 };
