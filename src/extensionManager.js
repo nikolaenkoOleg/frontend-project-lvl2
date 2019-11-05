@@ -7,6 +7,11 @@ import astRender from './formatters/astRender';
 import plainRender from './formatters/plainRender';
 
 export default (firstConfig, secondConfig, format) => {
+  if (format !== 'plain' && format !== 'default') {
+    console.log(`Error. Wrong format ${format}, use 'plain' or 'default'.`);
+    return '';
+  }
+
   const pathToFirstFile = path.isAbsolute(firstConfig)
     ? firstConfig : path.resolve(firstConfig);
 
