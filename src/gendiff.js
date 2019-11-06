@@ -1,5 +1,5 @@
 import program from 'commander';
-import compare from './extensionManager';
+import compareFiles from './extensionManager';
 
 export default () => {
   program
@@ -9,7 +9,7 @@ export default () => {
     .option('-f, --format [type]', 'output format: plain, default', 'default')
     .arguments('<firstConfig> <secondConfig>')
     .action((firstConfig, secondConfig) => {
-      console.log(compare(firstConfig, secondConfig, program.format));
+      console.log(compareFiles(firstConfig, secondConfig, program.format));
     });
 
   program.parse(process.argv);

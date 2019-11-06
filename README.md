@@ -30,4 +30,6 @@ Asciinema:
 json - https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp
 yaml - https://asciinema.org/a/xYzVcb9xBATo6ZSrfVzOjG37s
 ini - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
+
+plain out - https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj
 ```
