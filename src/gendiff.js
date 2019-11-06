@@ -6,7 +6,7 @@ export default () => {
     .version('1.0.0')
     .description('Compares two configuration files and shows a difference.')
     .option('-d, --debug', 'output extra debugging')
-    .option('-f, --format [type]', 'output format: plain, default', 'default')
+    .option('-f, --format [type]', 'output format: plain, json, default', 'default')
     .arguments('<firstConfig> <secondConfig>')
     .action((firstConfig, secondConfig) => {
       console.log(compareFiles(firstConfig, secondConfig, program.format));

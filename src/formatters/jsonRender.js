@@ -5,7 +5,7 @@ const getkey = (name, sign) => {
     case 'deleted':
       return `- ${name}`;
     case 'unchanged':
-      return `  ${name}`;
+      return `${name}`;
     default:
       return null;
   }
@@ -72,12 +72,8 @@ const getRenderedAst = (ast) => {
     return acc;
   }, {});
 
-  const quote = /"/g;
-  const comma = /,/g;
-  const renderedAst = render(ast);
-  const result = JSON.stringify(renderedAst, null, 2).replace(quote, '').replace(comma, '');
 
-  return result;
+  return JSON.stringify(render(ast), null, 2);
 };
 
 export default getRenderedAst;
