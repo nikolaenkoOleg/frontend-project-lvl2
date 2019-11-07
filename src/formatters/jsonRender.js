@@ -5,13 +5,13 @@ const getkey = (name, sign) => {
     case 'deleted':
       return `- ${name}`;
     case 'unchanged':
-      return `${name}`;
+      return `  ${name}`;
     default:
       return null;
   }
 };
 
-const getRenderedAst = (ast) => {
+const getJsonFromAst = (ast) => {
   const render = (tree) => tree.reduce((acc, {
     name,
     beforeValue,
@@ -76,4 +76,4 @@ const getRenderedAst = (ast) => {
   return JSON.stringify(render(ast), null, 2);
 };
 
-export default getRenderedAst;
+export default getJsonFromAst;

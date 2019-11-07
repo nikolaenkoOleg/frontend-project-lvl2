@@ -27,9 +27,14 @@ $ make test
 Asciinema:
 
 ```
-json - https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp
-yaml - https://asciinema.org/a/xYzVcb9xBATo6ZSrfVzOjG37s
-ini - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
+json leniar -  https://asciinema.org/a/HBNsIi2uy4gk5ezHIRJ5YxYiq
+yaml leniar - https://asciinema.org/a/jwtrxPVjZ0SMVeCyBmMCXMY4F
+ini leniar - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
+
+json tree - https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp
+yaml tree - https://asciinema.org/a/xYzVcb9xBATo6ZSrfVzOjG37s
+ini tree - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
 
 plain out - https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj
+json out  - https://asciinema.org/a/c4AnIeJqekmnOTWtqelXX62oI
 ```
