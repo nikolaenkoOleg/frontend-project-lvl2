@@ -38,6 +38,9 @@
     "type": "git",
     "url": "git+https://github.com/nikolaenkoOleg/frontend-project-lvl2.git"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "author": "Oleg Nikolaenko",
   "license": "ISC",
   "bugs": {
