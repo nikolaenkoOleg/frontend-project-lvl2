@@ -8,45 +8,46 @@ const getNode = (name, beforeValue = '', afterValue = '', children = '', status)
   status,
 });
 
-const getSoloAst = (data) => Object.keys(data).map((key) => getNode(key, data[key], '', '', 'unchanged'));
+const getSoloNodeAst = (data) => Object.keys(data).map((key) => getNode(key, data[key], '', '', 'unchanged'));
 
-const buildAst = (before = {}, after = {}) => {
-  const keys = Object.keys(before).concat(Object.keys(after));
+
+const buildAst = (beforeData, afterData) => {
+  const keys = Object.keys(beforeData).concat(Object.keys(afterData));
   const filteredKeys = _.uniqWith(keys, _.isEqual).sort();
 
   return filteredKeys.map((key) => {
-    if (_.has(before, key) && _.has(after, key)) {
-      if (typeof before[key] === 'object' && typeof after[key] === 'object') {
-        return getNode(key, '', '', buildAst(before[key], after[key]), 'unchanged');
+    if (_.has(beforeData, key) && _.has(afterData, key)) {
+      if (_.isObject(beforeData[key]) && _.isObject(afterData[key])) {
+        return getNode(key, '', '', buildAst(beforeData[key], afterData[key]), 'unchanged');
       }
 
-      if (typeof before[key] === 'object' && typeof after[key] !== 'object') {
-        return getNode(key, getSoloAst(before[key]), after[key], '', 'value type changed');
+      if (_.isObject(beforeData[key]) && !_.isObject(afterData[key])) {
+        return getNode(key, getSoloNodeAst(beforeData[key]), afterData[key], '', 'value type changed');
       }
 
-      if (typeof before[key] !== 'object' && typeof after[key] === 'object') {
-        return getNode(key, before[key], getSoloAst(after[key]), '', 'value type changed');
+      if (!_.isObject(beforeData[key]) && _.isObject(afterData[key])) {
+        return getNode(key, beforeData[key], getSoloNodeAst(afterData[key]), '', 'value type changed');
       }
 
-      if (before[key] === after[key]) {
-        return getNode(key, before[key], after[key], '', 'unchanged');
+      if (beforeData[key] === afterData[key]) {
+        return getNode(key, beforeData[key], afterData[key], '', 'unchanged');
       }
 
-      return getNode(key, before[key], after[key], '', 'edited');
+      return getNode(key, beforeData[key], afterData[key], '', 'edited');
     }
 
-    if (_.has(before, key) && !_.has(after, key)) {
-      if (typeof before[key] === 'object') {
-        return getNode(key, '', '', getSoloAst(before[key]), 'deleted');
+    if (_.has(beforeData, key) && !_.has(afterData, key)) {
+      if (_.isObject(beforeData[key])) {
+        return getNode(key, '', '', getSoloNodeAst(beforeData[key]), 'deleted');
       }
-      return getNode(key, before[key], after[key], '', 'deleted');
+      return getNode(key, beforeData[key], afterData[key], '', 'deleted');
     }
 
-    if (!_.has(before, key) && _.has(after, key)) {
-      if (typeof after[key] === 'object') {
-        return getNode(key, '', '', getSoloAst(after[key]), 'added');
+    if (!_.has(beforeData, key) && _.has(afterData, key)) {
+      if (_.isObject(afterData[key])) {
+        return getNode(key, '', '', getSoloNodeAst(afterData[key]), 'added');
       }
-      return getNode(key, before[key], after[key], '', 'added');
+      return getNode(key, beforeData[key], afterData[key], '', 'added');
     }
 
     return null;
