@@ -23,17 +23,17 @@ $ make test
 ```
 Example:
 
-Json leniar example:
+File.json leniar example:
 [![asciicast](https://asciinema.org/a/HBNsIi2uy4gk5ezHIRJ5YxYiq.svg)](https://asciinema.org/a/HBNsIi2uy4gk5ezHIRJ5YxYiq)
 
-yaml leniar - https://asciinema.org/a/jwtrxPVjZ0SMVeCyBmMCXMY4F
-ini leniar - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
+File.yaml leniar - https://asciinema.org/a/jwtrxPVjZ0SMVeCyBmMCXMY4F  
+File.ini leniar - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
 
-Json tree expamle:
-[![asciicast](https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp.svg)](https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp)
+File.json tree expamle:
+[![asciicast](https://asciinema.org/a/hyY05nUbQ91xmMWOs5VgtASEr.svg)](https://asciinema.org/a/hyY05nUbQ91xmMWOs5VgtASEr)
 
-yaml tree - https://asciinema.org/a/xYzVcb9xBATo6ZSrfVzOjG37s
-ini tree - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
+File.yaml tree - https://asciinema.org/a/xYzVcb9xBATo6ZSrfVzOjG37s  
+File.ini tree - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
 
 Plain output format example:
 [![asciicast](https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj.svg)](https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj)
