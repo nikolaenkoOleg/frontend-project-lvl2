@@ -21,17 +21,22 @@ $ make install
 ```sh
 $ make test
 ```
-Asciinema:
+Example:
 
-```
-json leniar -  https://asciinema.org/a/HBNsIi2uy4gk5ezHIRJ5YxYiq
+Json leniar example:
+[![asciicast](https://asciinema.org/a/HBNsIi2uy4gk5ezHIRJ5YxYiq.svg)](https://asciinema.org/a/HBNsIi2uy4gk5ezHIRJ5YxYiq)
+
 yaml leniar - https://asciinema.org/a/jwtrxPVjZ0SMVeCyBmMCXMY4F
 ini leniar - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
 
-json tree - https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp
+Json tree expamle:
+[![asciicast](https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp.svg)](https://asciinema.org/a/6R715AH0rXCiA1o1HXx6MwCXp)
+
 yaml tree - https://asciinema.org/a/xYzVcb9xBATo6ZSrfVzOjG37s
 ini tree - https://asciinema.org/a/gHhHfzMdfg7tWanFm5XqV6gyp
 
-plain out - https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj
-json out  - https://asciinema.org/a/c4AnIeJqekmnOTWtqelXX62oI
-```
+Plain output format example:
+[![asciicast](https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj.svg)](https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj)
+
+Json output format example:
+[![asciicast](https://asciinema.org/a/c4AnIeJqekmnOTWtqelXX62oI.svg)](https://asciinema.org/a/c4AnIeJqekmnOTWtqelXX62oI)
