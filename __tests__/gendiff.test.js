@@ -19,22 +19,37 @@ const treeBefore = path.resolve('__tests__/__fixtures__/tree/before');
 const treeAfter = path.resolve('__tests__/__fixtures__/tree/after');
 
 test('compare 2 json with plain, tree, linear and json output', () => {
-  expect(compareFiles(`${plainBefore}.json`, `${plainAfter}.json`).replace(/\s/g, '')).toBe(linearResult);
-  expect(compareFiles(`${treeBefore}.json`, `${treeAfter}.json`).replace(/\s/g, '')).toBe(treeResult);
-  expect(compareFiles(`${treeBefore}.json`, `${treeAfter}.json`, 'plain').replace(/\s/g, '')).toBe(plainResult);
-  expect(compareFiles(`${treeBefore}.json`, `${treeAfter}.json`, 'json').replace(/\s/g, '')).toBe(jsonResult);
+  const expectedLinearValue = compareFiles(`${plainBefore}.json`, `${plainAfter}.json`).replace(/\s/g, '');
+  const expectedTreeValue = compareFiles(`${treeBefore}.json`, `${treeAfter}.json`).replace(/\s/g, '');
+  const expectedPlainValue = compareFiles(`${treeBefore}.json`, `${treeAfter}.json`, 'plain').replace(/\s/g, '');
+  const expectedJsonValue = compareFiles(`${treeBefore}.json`, `${treeAfter}.json`, 'json').replace(/\s/g, '');
+
+  expect(expectedLinearValue).toBe(linearResult);
+  expect(expectedTreeValue).toBe(treeResult);
+  expect(expectedPlainValue).toBe(plainResult);
+  expect(expectedJsonValue).toBe(jsonResult);
 });
 
 test('compare 2 yaml with plain, tree and linear output', () => {
-  expect(compareFiles(`${plainBefore}.yaml`, `${plainAfter}.yaml`).replace(/\s/g, '')).toBe(linearResult);
-  expect(compareFiles(`${treeBefore}.yaml`, `${treeAfter}.yaml`).replace(/\s/g, '')).toBe(treeResult);
-  expect(compareFiles(`${treeBefore}.yaml`, `${treeAfter}.yaml`, 'plain').replace(/\s/g, '')).toBe(plainResult);
-  expect(compareFiles(`${treeBefore}.yaml`, `${treeAfter}.yaml`, 'json').replace(/\s/g, '')).toBe(jsonResult);
+  const expectedLinearValue = compareFiles(`${plainBefore}.yaml`, `${plainAfter}.yaml`).replace(/\s/g, '');
+  const expectedTreeValue = compareFiles(`${treeBefore}.yaml`, `${treeAfter}.yaml`).replace(/\s/g, '');
+  const expectedPlainValue = compareFiles(`${treeBefore}.yaml`, `${treeAfter}.yaml`, 'plain').replace(/\s/g, '');
+  const expectedJsonValue = compareFiles(`${treeBefore}.yaml`, `${treeAfter}.yaml`, 'json').replace(/\s/g, '');
+
+  expect(expectedLinearValue).toBe(linearResult);
+  expect(expectedTreeValue).toBe(treeResult);
+  expect(expectedPlainValue).toBe(plainResult);
+  expect(expectedJsonValue).toBe(jsonResult);
 });
 
 test('compare 2 ini with plain, tree and linear output', () => {
-  expect(compareFiles(`${plainBefore}.ini`, `${plainAfter}.ini`).replace(/\s/g, '')).toBe(linearResult);
-  expect(compareFiles(`${treeBefore}.ini`, `${treeAfter}.ini`).replace(/\s/g, '')).toBe(treeResult);
-  expect(compareFiles(`${treeBefore}.ini`, `${treeAfter}.ini`, 'plain').replace(/\s/g, '')).toBe(plainResult);
-  expect(compareFiles(`${treeBefore}.ini`, `${treeAfter}.ini`, 'json').replace(/\s/g, '')).toBe(jsonResult);
+  const expectedLinearValue = compareFiles(`${plainBefore}.ini`, `${plainAfter}.ini`).replace(/\s/g, '');
+  const expectedTreeValue = compareFiles(`${treeBefore}.ini`, `${treeAfter}.ini`).replace(/\s/g, '');
+  const expectedPlainValue = compareFiles(`${treeBefore}.ini`, `${treeAfter}.ini`, 'plain').replace(/\s/g, '');
+  const expectedJsonValue = compareFiles(`${treeBefore}.ini`, `${treeAfter}.ini`, 'json').replace(/\s/g, '');
+
+  expect(expectedLinearValue).toBe(linearResult);
+  expect(expectedTreeValue).toBe(treeResult);
+  expect(expectedPlainValue).toBe(plainResult);
+  expect(expectedJsonValue).toBe(jsonResult);
 });
