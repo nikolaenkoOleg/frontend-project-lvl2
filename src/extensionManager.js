@@ -28,7 +28,7 @@ export default (beforeConfig, afterConfig, format) => {
         case 'json':
           return jsonRender(astBuilder(beforeData, afterData));
         default:
-          return treeRender(jsonRender(astBuilder(beforeData, afterData)));
+          return treeRender(astBuilder(beforeData, afterData));
       }
     },
   },
@@ -44,7 +44,7 @@ export default (beforeConfig, afterConfig, format) => {
         case 'json':
           return jsonRender(astBuilder(beforeData, afterData));
         default:
-          return treeRender(jsonRender(astBuilder(beforeData, afterData)));
+          return treeRender(astBuilder(beforeData, afterData));
       }
     },
   },
@@ -60,7 +60,7 @@ export default (beforeConfig, afterConfig, format) => {
         case 'json':
           return jsonRender(astBuilder(beforeData, afterData));
         default:
-          return treeRender(jsonRender(astBuilder(beforeData, afterData)));
+          return treeRender(astBuilder(beforeData, afterData));
       }
     },
   },
