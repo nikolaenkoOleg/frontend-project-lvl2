@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const getkey = (name, sign) => {
   switch (sign) {
     case 'added':
@@ -37,7 +39,7 @@ const getJsonFromAst = (ast) => {
 
     switch (status) {
       case 'value type changed':
-        if (typeof beforeValue === 'object') {
+        if (_.isObject(beforeValue)) {
           acc[getkey(name, 'deleted')] = render(beforeValue);
           acc[getkey(name, 'added')] = afterValue;
 
@@ -71,7 +73,6 @@ const getJsonFromAst = (ast) => {
 
     return acc;
   }, {});
-
 
   return JSON.stringify(render(ast), null, 2);
 };
