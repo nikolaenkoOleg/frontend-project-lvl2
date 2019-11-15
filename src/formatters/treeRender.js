@@ -1,12 +1,16 @@
 import _ from 'lodash';
 
 export default (ast) => {
-  // const quote = /"/g;
-  // const comma = /,/g;
+  const getTabs = (spacesCount) => {
+    let tabs = '';
+    for (let i = 0; i < spacesCount; i += 1) {
+      tabs = tabs.concat(' ');
+    }
 
-  // return ast.replace(quote, '').replace(comma, '');
+    return tabs;
+  };
 
-  const render = (tree) => tree.reduce((acc, {
+  const render = (tree, spaces) => tree.reduce((acc, {
     name,
     beforeValue,
     afterValue,
@@ -16,14 +20,11 @@ export default (ast) => {
     if (children) {
       switch (status) {
         case 'added':
-          acc.concat(acc + '+ ' + name + ':' + '{\n' + render(children) + '\n}');
-          return acc;
+          return `${acc}${getTabs(spaces)}+ ${name}: {\n${render(children, spaces + 4)}${getTabs(spaces + 2)}}\n`;
         case 'deleted':
-          acc.concat(acc +  '- ' + name + ':' + '{\n' + render(children) + '\n}');
-          return acc;
+          return `${acc}${getTabs(spaces)}- ${name}: {\n${render(children, spaces + 4)}${getTabs(spaces + 2)}}\n`;
         case 'unchanged':
-          acc.concat(acc +  '  ' + name + ':' + '{\n' + render(children) + '\n}');
-          return acc;
+          return `${acc}${getTabs(spaces)}  ${name}: {\n${render(children, spaces + 4)}${getTabs(spaces + 2)}}\n`;
         default:
           break;
       }
@@ -32,39 +33,18 @@ export default (ast) => {
     switch (status) {
       case 'value type changed':
         if (_.isObject(beforeValue)) {
-          acc.concat(acc +  '- ' + name + ':' + '{\n' + render(beforeValue) + '\n}');
-          acc.concat(acc +  '+ ' + name + ':' + afterValue);
-          console.log(acc);
-
-          return acc;
+          return `${acc}${getTabs(spaces)}- ${name}: {\n${render(beforeValue, spaces + 2)}${getTabs(spaces + 2)}}\n${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
         }
 
-        acc.concat(acc + '- ' + name + ':' + beforeValue);
-        acc.concat(acc + '+ ' + name + ':' + '{\n' + render(afterValue) + '\n}');
-        console.log(acc);
-
-        return acc;
+        return `${acc}${getTabs(spaces)}- ${name}: ${beforeValue}\n${getTabs(spaces)}+ ${name}: {\n${render(afterValue, spaces + 2)}${getTabs(spaces + 2)}}\n`;
       case 'unchanged':
-        acc.concat(acc +  '  ' + name + ':' + beforeValue);
-        console.log(acc);
-
-        return acc;
+        return `${acc}${getTabs(spaces)}  ${name}: ${beforeValue}\n`;
       case 'edited':
-        acc.concat(acc + '- ' + name + ':' + beforeValue);
-        acc.concat(acc + '+ ' + name + ':' + afterValue);
-        console.log(acc);
-
-        return acc;
+        return `${acc}${getTabs(spaces)}- ${name}: ${beforeValue}\n${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
       case 'deleted':
-        acc.concat(acc + '- ' + name + ':' + beforeValue);
-        console.log(acc);
-
-        return acc;
+        return `${acc}${getTabs(spaces)}- ${name}: ${beforeValue}\n`;
       case 'added':
-        acc.concat(acc + '+ ' + name + ':' + afterValue);
-        console.log(acc);
-
-        return acc;
+        return `${acc}${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
       default:
         break;
     }
@@ -72,9 +52,5 @@ export default (ast) => {
     return acc;
   }, '');
 
-  console.log(render(ast));
+  return `{\n${render(ast, 2)}}`;
 };
-
-// const hello = 'Привет, ';
-// const five = '5';
-// console.log(hello.concat('Кевин, удачного дня ' + five + ' раз'));
