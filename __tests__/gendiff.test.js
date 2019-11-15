@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import compareFiles from '../src/extensionManager';
+import compareFiles from '../src/index';
 
 const getFilePath = (fileName) => path.join(__dirname, `../__fixtures__/${fileName}`);
 
