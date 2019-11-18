@@ -2,7 +2,7 @@ install:
 	npm install
 
 run:
-	npx babel-node src/bin/
+	npx babel-node src/ ./__fixtures__/tree/before.json ./__fixtures__/tree/after.json
 
 install-deps:
 	npm install

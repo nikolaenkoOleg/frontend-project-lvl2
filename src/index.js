@@ -1,3 +1,3 @@
-import gendiff from './extensionManager';
+import gendiff from './bin/gendiff';
 
-export default gendiff;
+gendiff();
