@@ -9,96 +9,87 @@ const getTabs = (spacesCount) => {
   return tabs;
 };
 
+const renderActions = [
+  {
+    check: (status) => status === 'unchanged',
+    renderAction: (node, render, spaces) => {
+      if (node.children) {
+        const name = `${getTabs(spaces)}  ${node.name}: {`;
+        const processedChildren = render(node.children, spaces + 4);
+        const closingBracket = `${getTabs(spaces + 2)}}`;
 
-export default (ast) => {
-  const render = (tree, spaces) => tree.reduce((acc, {
-    name,
-    beforeValue,
-    afterValue,
-    children,
-    status,
-  }) => {
-    if (children) {
-      switch (status) {
-        case 'added':
-          return [...acc, line]
-          `${acc}${getTabs(spaces)}+ ${name}: {\n${render(children, spaces + 4)}${getTabs(spaces + 2)}}\n`;
-        case 'deleted':
-          return `${acc}${getTabs(spaces)}- ${name}: {\n${render(children, spaces + 4)}${getTabs(spaces + 2)}}\n`;
-        case 'unchanged':
-          return `${acc}${getTabs(spaces)}  ${name}: {\n${render(children, spaces + 4)}${getTabs(spaces + 2)}}\n`;
-        default:
-          break;
+        return [name, processedChildren, closingBracket];
       }
-    }
-
-    switch (status) {
-      case 'value type changed':
-        if (_.isObject(beforeValue)) {
-          return `${acc}${getTabs(spaces)}- ${name}: {\n${render(beforeValue, spaces + 2)}${getTabs(spaces + 2)}}\n${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
-        }
-
-        return `${acc}${getTabs(spaces)}- ${name}: ${beforeValue}\n${getTabs(spaces)}+ ${name}: {\n${render(afterValue, spaces + 2)}${getTabs(spaces + 2)}}\n`;
-      case 'unchanged':
-        return `${acc}${getTabs(spaces)}  ${name}: ${beforeValue}\n`;
-      case 'edited':
-        return `${acc}${getTabs(spaces)}- ${name}: ${beforeValue}\n${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
-      case 'deleted':
-        return `${acc}${getTabs(spaces)}- ${name}: ${beforeValue}\n`;
-      case 'added':
-        return `${acc}${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
-      default:
-        break;
-    }
-
-    return acc;
-  }, []);
-
-  const renderActions = [
-    {
-      check: (status) => status === 'unchanged',
-      action: (node, spaces) => `${getTabs(spaces)}  ${node.name}: ${node.afterValue}`,
+      return `${getTabs(spaces)}  ${node.name}: ${node.beforeValue}`;
     },
-    {
-      check: (status) => status === 'added',
-      action: (node, spaces) => `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`,
+  },
+  {
+    check: (status) => status === 'added',
+    renderAction: (node, render, spaces) => {
+      if (node.children) {
+        const name = `${getTabs(spaces)}+ ${node.name}: {`;
+        const processedChildren = render(node.children, spaces + 4);
+        const closingBracket = `${getTabs(spaces + 2)}}`;
+
+        return [name, processedChildren, closingBracket];
+      }
+      return `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
     },
-    {
-      check: (status) => status === 'deleted',
-      action: (node, spaces) => `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`,
+  },
+  {
+    check: (status) => status === 'deleted',
+    renderAction: (node, render, spaces) => {
+      if (node.children) {
+        const name = `${getTabs(spaces)}- ${node.name}: {`;
+        const processedChildren = render(node.children, spaces + 4);
+        const closingBracket = `${getTabs(spaces + 2)}}`;
+
+        return [name, processedChildren, closingBracket];
+      }
+      return `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
     },
-    {
-      check: (status) => status === 'edited',
-      action: (node, spaces) => {
-        const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+  },
+  {
+    check: (status) => status === 'edited',
+    renderAction: (node, render, spaces) => {
+      const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+      const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
+
+      return [removedData, addedData];
+    },
+  },
+  {
+    check: (status) => status === 'value type changed',
+    renderAction: (node, render, spaces) => {
+      const closingBracket = `${getTabs(spaces + 2)}}`;
+      if (_.isObject(node.beforeValue)) {
+        const removedName = `${getTabs(spaces)}- ${node.name}: {`;
+        const processedChildren = render(node.beforeValue, spaces + 4);
         const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
 
-        return [removedData, addedData];
-      },
+        return [removedName, processedChildren, closingBracket, addedData];
+      }
+      const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+      const addedName = `${getTabs(spaces)}+ ${node.name}: {`;
+      const processedChildren = render(node.afterValue, spaces + 4);
+
+      return [removedData, addedName, processedChildren, closingBracket];
     },
-    {
-      check: (status) => status === 'value type changed',
-      action: (node, spaces) => {
-        const closingBracket = `${getTabs(spaces + 2)}}`;
-        if (_.isObject(node.beforeValue)) {
-          const removedName = `${getTabs(spaces)}- ${node.name}: {`;
-          const processedChildren = `${render(node.beforeValue, spaces + 2)}`;
-          const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
+  },
+];
 
-          return [removedName, processedChildren, closingBracket, addedData];
-        }
-        const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
-        const addedName = `${getTabs(spaces)}+ ${node.name}: {`;
-        const processedChildren = `${render(node.afterValue, spaces + 2)}`;
+const getRenderAction = (status) => renderActions.find(({ check }) => check(status));
 
-        return [removedData, addedName, processedChildren, closingBracket];
-      },
-    },
-    {
-      
-    },
-  ];
+export default (ast) => {
+  const render = (tree, spaces) => tree.reduce((acc, node) => {
+    const { renderAction } = getRenderAction(node.status);
+    const lines = renderAction(node, render, spaces);
 
+    return [...acc, lines];
+  }, []);
 
-  return `{\n${render(ast, 2)}}`;
+  const tree = [...'{', ...render(ast, 2), ...'}'];
+  const result = _.flattenDeep(tree).join('\n');
+
+  return result;
 };
