@@ -25,7 +25,7 @@ test.each([
   ['tree', 'json', 'default', getResult('tree')],
   ['tree', 'json', 'plain', getResult('plain')],
   ['tree', 'json', 'json', getResult('json')],
-])('json (%s, %s, %s)', (type, format, output, expected) => {
+])('json (input: %s, format: %s, output: %s)', (type, format, output, expected) => {
   expect(getDiff(type, format, output)).toBe(expected);
 });
 
@@ -34,7 +34,7 @@ test.each([
   ['tree', 'yaml', 'default', getResult('tree')],
   ['tree', 'yaml', 'plain', getResult('plain')],
   ['tree', 'yaml', 'json', getResult('json')],
-])('yaml (%s, %s, %s)', (type, format, output, expected) => {
+])('yaml (input: %s, format: %s, output: %s)', (type, format, output, expected) => {
   expect(getDiff(type, format, output)).toBe(expected);
 });
 
@@ -43,6 +43,6 @@ test.each([
   ['tree', 'ini', 'default', getResult('tree')],
   ['tree', 'ini', 'plain', getResult('plain')],
   ['tree', 'ini', 'json', getResult('json')],
-])('ini (%s, %s, %s)', (type, format, output, expected) => {
+])('ini (input: %s, format: %s, output: %s)', (type, format, output, expected) => {
   expect(getDiff(type, format, output)).toBe(expected);
 });
