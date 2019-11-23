@@ -12,41 +12,29 @@ export default (ast) => {
   }) => {
     if (children.length > 1) {
       const newPath = getPath(path, name);
-      acc.push(render(children, newPath));
 
-      return acc;
+      return [...acc, render(children, newPath)];
     }
 
     switch (status) {
       case 'value type changed':
         if (typeof afterValue === 'object') {
-          acc.push(`Property '${path}${name}' was updated. From ${beforeValue} to [complex value]`);
-
-          return acc;
+          return [...acc, `Property '${path}${name}' was updated. From ${beforeValue} to [complex value]`];
         }
 
-        acc.push(`Property '${path}${name}' was updated. From [complex value] to ${afterValue}`);
-
-        return acc;
+        return [...acc, `Property '${path}${name}' was updated. From [complex value] to ${afterValue}`];
       case 'edited':
-        acc.push(`Property '${path}${name}' was updated. From ${beforeValue} to ${afterValue}.`);
-
-        return acc;
+        return [...acc, `Property '${path}${name}' was updated. From ${beforeValue} to ${afterValue}.`];
       case 'unchanged':
         return acc;
       case 'deleted':
-        acc.push(`Property '${path}${name}' was removed.`);
-
-        return acc;
+        return [...acc, `Property '${path}${name}' was removed.`];
       case 'added':
         if (typeof afterValue === 'object' || children) {
-          acc.push(`Property '${path}${name}' was added with value: [complex value].`);
-
-          return acc;
+          return [...acc, `Property '${path}${name}' was added with value: [complex value].`];
         }
-        acc.push(`Property '${path}${name}' was added with value: ${afterValue}.`);
 
-        return acc;
+        return [...acc, `Property '${path}${name}' was added with value: ${afterValue}.`];
       default:
         break;
     }

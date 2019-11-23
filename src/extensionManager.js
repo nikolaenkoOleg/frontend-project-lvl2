@@ -8,13 +8,25 @@ import plainRender from './formatters/plainRender';
 import treeRender from './formatters/treeRender';
 
 export default (beforeConfig, afterConfig, format) => {
-  const pathToFirstFile = path.isAbsolute(beforeConfig)
-    ? beforeConfig : path.resolve(beforeConfig);
-
-  const pathToSecondFile = path.isAbsolute(afterConfig)
-    ? afterConfig : path.resolve(afterConfig);
+  const pathToFirstFile = path.resolve(beforeConfig);
+  const pathToSecondFile = path.resolve(afterConfig);
 
   const fileExtension = path.extname(beforeConfig).replace('.', '');
+
+  const getDiffWithFormat = (beforeData, afterData, out) => {
+    switch (out) {
+      case 'plain':
+        return plainRender(astBuilder(beforeData, afterData));
+      case 'json':
+        return jsonRender(astBuilder(beforeData, afterData));
+      case 'tree':
+        return treeRender(astBuilder(beforeData, afterData));
+      default:
+        break;
+    }
+
+    return null;
+  };
 
   const extensionActions = [{
     name: (arg) => arg === 'json',
@@ -22,14 +34,7 @@ export default (beforeConfig, afterConfig, format) => {
       const beforeData = JSON.parse(fs.readFileSync(beforeDataPath).toString());
       const afterData = JSON.parse(fs.readFileSync(afterDataPath).toString());
 
-      switch (outputFormat) {
-        case 'plain':
-          return plainRender(astBuilder(beforeData, afterData));
-        case 'json':
-          return jsonRender(astBuilder(beforeData, afterData));
-        default:
-          return treeRender(astBuilder(beforeData, afterData));
-      }
+      return getDiffWithFormat(beforeData, afterData, outputFormat);
     },
   },
   {
@@ -38,14 +43,7 @@ export default (beforeConfig, afterConfig, format) => {
       const beforeData = yaml.safeLoad(fs.readFileSync(beforeDataPath).toString());
       const afterData = yaml.safeLoad(fs.readFileSync(afterDataPath).toString());
 
-      switch (outputFormat) {
-        case 'plain':
-          return plainRender(astBuilder(beforeData, afterData));
-        case 'json':
-          return jsonRender(astBuilder(beforeData, afterData));
-        default:
-          return treeRender(astBuilder(beforeData, afterData));
-      }
+      return getDiffWithFormat(beforeData, afterData, outputFormat);
     },
   },
   {
@@ -54,14 +52,7 @@ export default (beforeConfig, afterConfig, format) => {
       const beforeData = ini.parse(fs.readFileSync(beforeDataPath).toString());
       const afterData = ini.parse(fs.readFileSync(afterDataPath).toString());
 
-      switch (outputFormat) {
-        case 'plain':
-          return plainRender(astBuilder(beforeData, afterData));
-        case 'json':
-          return jsonRender(astBuilder(beforeData, afterData));
-        default:
-          return treeRender(astBuilder(beforeData, afterData));
-      }
+      return getDiffWithFormat(beforeData, afterData, outputFormat);
     },
   },
   ];

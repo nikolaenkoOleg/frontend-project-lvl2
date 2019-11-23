@@ -1,93 +1,95 @@
 import _ from 'lodash';
 
+const getTabs = (spacesCount) => {
+  let tabs = '';
+  for (let i = 0; i < spacesCount; i += 1) {
+    tabs = tabs.concat(' ');
+  }
+
+  return tabs;
+};
+
+const renderActions = [
+  {
+    check: (status) => status === 'unchanged',
+    renderAction: (node, render, spaces) => {
+      if (node.children) {
+        const name = `${getTabs(spaces)}  ${node.name}: {`;
+        const processedChildren = render(node.children, spaces + 4);
+        const closingBracket = `${getTabs(spaces + 2)}}`;
+
+        return [name, processedChildren, closingBracket];
+      }
+      return `${getTabs(spaces)}  ${node.name}: ${node.beforeValue}`;
+    },
+  },
+  {
+    check: (status) => status === 'added',
+    renderAction: (node, render, spaces) => {
+      if (node.children) {
+        const name = `${getTabs(spaces)}+ ${node.name}: {`;
+        const processedChildren = render(node.children, spaces + 4);
+        const closingBracket = `${getTabs(spaces + 2)}}`;
+
+        return [name, processedChildren, closingBracket];
+      }
+      return `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
+    },
+  },
+  {
+    check: (status) => status === 'deleted',
+    renderAction: (node, render, spaces) => {
+      if (node.children) {
+        const name = `${getTabs(spaces)}- ${node.name}: {`;
+        const processedChildren = render(node.children, spaces + 4);
+        const closingBracket = `${getTabs(spaces + 2)}}`;
+
+        return [name, processedChildren, closingBracket];
+      }
+      return `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+    },
+  },
+  {
+    check: (status) => status === 'edited',
+    renderAction: (node, render, spaces) => {
+      const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+      const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
+
+      return [removedData, addedData];
+    },
+  },
+  {
+    check: (status) => status === 'value type changed',
+    renderAction: (node, render, spaces) => {
+      const closingBracket = `${getTabs(spaces + 2)}}`;
+      if (_.isObject(node.beforeValue)) {
+        const removedName = `${getTabs(spaces)}- ${node.name}: {`;
+        const processedChildren = render(node.beforeValue, spaces + 4);
+        const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
+
+        return [removedName, processedChildren, closingBracket, addedData];
+      }
+      const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+      const addedName = `${getTabs(spaces)}+ ${node.name}: {`;
+      const processedChildren = render(node.afterValue, spaces + 4);
+
+      return [removedData, addedName, processedChildren, closingBracket];
+    },
+  },
+];
+
+const getRenderAction = (status) => renderActions.find(({ check }) => check(status));
+
 export default (ast) => {
-  const getTabs = (spacesCount) => {
-    let tabs = '';
-    for (let i = 0; i < spacesCount; i += 1) {
-      tabs = tabs.concat(' ');
-    }
+  const render = (tree, spaces) => tree.reduce((acc, node) => {
+    const { renderAction } = getRenderAction(node.status);
+    const lines = renderAction(node, render, spaces);
 
-    return tabs;
-  };
+    return [...acc, lines];
+  }, []);
 
-  const render = (tree, spaces) => {
-    console.log('пришло', tree);
-    return tree.reduce((acc, {
-      name,
-      beforeValue,
-      afterValue,
-      children,
-      status,
-    }) => {
-      // console.log('пришло', children);
-      if (children) {
-        switch (status) {
-          case 'added':
-            acc.push(`${getTabs(spaces)}+ ${name}: {`);
-            acc.push(`${render(children, spaces + 4).join('')}`);
-            acc.push(`${getTabs(spaces + 2)}}`);
-            break;
-            // return `${getTabs(spaces)}+ ${name}: {${render(children, spaces + 4).join('')}${getTabs(spaces + 2)}}\n`;
-          case 'deleted':
-            acc.push(`${getTabs(spaces)}- ${name}: {`);
-            acc.push(`${render(children, spaces + 4).join('')}`);
-            acc.push(`${getTabs(spaces + 2)}}`);
-            break;
-            // return `${getTabs(spaces)}- ${name}: {\n${render(children, spaces + 4).join('')}${getTabs(spaces + 2)}}\n`;
-          case 'unchanged':
-            acc.push(`${getTabs(spaces)}  ${name}: {`);
-            acc.push(`${render(children, spaces + 4).join('')}`);
-            acc.push(`${getTabs(spaces + 2)}}`);
-            break;
-            // return `${getTabs(spaces)}  ${name}: {\n${render(children, spaces + 4).join('')}${getTabs(spaces + 2)}}\n`;
-          default:
-            break;
-        }
-      }
+  const tree = [...'{', ...render(ast, 2), ...'}'];
+  const result = _.flattenDeep(tree).join('\n');
 
-      switch (status) {
-        case 'value type changed':
-          if (_.isObject(beforeValue)) {
-            acc.push(`${getTabs(spaces)}- ${name}: {`);
-            acc.push(`${render(beforeValue, spaces + 2)}`);
-            acc.push(`${getTabs(spaces + 2)}}`);
-            acc.push(`${getTabs(spaces)}+ ${name}: ${afterValue}`);
-            // return `${getTabs(spaces)}- ${name}: {\n${render(beforeValue, spaces + 2)}${getTabs(spaces + 2)}}\n${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
-          }
-
-          acc.push(`${getTabs(spaces)}- ${name}: ${beforeValue}`);
-          acc.push(`${getTabs(spaces)}+ ${name}: {`);
-          acc.push(`${render(afterValue, spaces + 2)}`);
-          acc.push(`${getTabs(spaces + 2)}}`);
-          break;
-          // return `${getTabs(spaces)}- ${name}: ${beforeValue}\n${getTabs(spaces)}+ ${name}: {\n${render(afterValue, spaces + 2)}${getTabs(spaces + 2)}}\n`;
-        case 'unchanged':
-          acc.push(`${getTabs(spaces)}  ${name}: ${beforeValue}`);
-          break;
-          // return `${getTabs(spaces)}  ${name}: ${beforeValue}\n`;
-        case 'edited':
-          acc.push(`${getTabs(spaces)}- ${name}: ${beforeValue}`);
-          acc.push(`${getTabs(spaces)}+ ${name}: ${afterValue}`);
-          break;
-          // return `${getTabs(spaces)}- ${name}: ${beforeValue}\n${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
-        case 'deleted':
-          acc.push(`${getTabs(spaces)}- ${name}: ${beforeValue}`);
-          break;
-          // return `${getTabs(spaces)}- ${name}: ${beforeValue}\n`;
-        case 'added':
-          acc.push(`${getTabs(spaces)}+ ${name}: ${afterValue}`);
-          break;
-          // return `${getTabs(spaces)}+ ${name}: ${afterValue}\n`;
-        default:
-          break;
-      }
-      acc.push('}');
-
-      return acc;
-    }, ['{']);
-
-  };
-  const result = render(ast, 2).join('\n');
-  console.log(result);
-  // return (`{\n${result}}`);
+  return result;
 };

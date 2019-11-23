@@ -5,7 +5,7 @@
       - setting2: 200
       - setting3: true
       + setting3: {
-          key: value
+            key: value
         }
       + setting4: blah blah
       + setting5: {
@@ -21,7 +21,7 @@
       + baz: bars
         foo: bar
       - nest: {
-          key: value
+            key: value
         }
       + nest: str
     }
