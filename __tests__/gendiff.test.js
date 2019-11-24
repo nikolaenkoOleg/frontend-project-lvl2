@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import compareFiles from '../src';
+import gendiff from '../src/gendiff';
 
 const getFilePath = (fileName) => path.join(__dirname, `../__fixtures__/${fileName}`);
 
@@ -8,7 +8,7 @@ const getDiff = (fileType, format, output) => {
   const beforeValuePath = getFilePath(`${fileType}/before.${format}`);
   const afterValuePath = getFilePath(`${fileType}/after.${format}`);
 
-  const diffFile = compareFiles(beforeValuePath, afterValuePath, output);
+  const diffFile = gendiff(beforeValuePath, afterValuePath, output);
 
   return diffFile;
 };

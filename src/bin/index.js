@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import compareFiles from '../extensionManager';
+import compareFiles from '../gendiff';
 
 export default () => {
   program
