@@ -5,8 +5,8 @@ import treeRender from './treeRender';
 import parse from '../filesParser';
 
 export default (beforePath, afterPath, output) => {
-  const { before, after } = parse(beforePath, afterPath);
-  const ast = astBuilder(before, after);
+  const { beforeData, afterData } = parse(beforePath, afterPath);
+  const ast = astBuilder(beforeData, afterData);
   switch (output) {
     case 'plain':
       return plainRender(ast);

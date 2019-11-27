@@ -11,37 +11,37 @@ export default (pathToBeforeFile, pathToAfterFile) => {
   const parsers = [
     {
       check: (arg) => arg === 'json',
-      parse: (beforeData, afterData) => {
-        const beforeJson = JSON.parse(beforeData);
-        const afterJson = JSON.parse(afterData);
+      parse: (oldData, newData) => {
+        const beforeJson = JSON.parse(oldData);
+        const afterJson = JSON.parse(newData);
 
         return {
           beforeData: beforeJson,
-          afterJson,
+          afterData: afterJson,
         };
       },
     },
     {
       check: (arg) => arg === 'yaml',
-      parse: (beforeData, afterData) => {
-        const beforeYaml = yaml.safeLoad(beforeData);
-        const afterYaml = yaml.safeLoad(afterData);
+      parse: (oldData, newData) => {
+        const beforeYaml = yaml.safeLoad(oldData);
+        const afterYaml = yaml.safeLoad(newData);
 
         return {
-          before: beforeYaml,
-          after: afterYaml,
+          beforeData: beforeYaml,
+          afterData: afterYaml,
         };
       },
     },
     {
       check: (arg) => arg === 'ini',
-      parse: (beforeData, afterData) => {
-        const beforeIni = ini.parse(beforeData);
-        const afterIni = ini.parse(afterData);
+      parse: (oldData, newData) => {
+        const beforeIni = ini.parse(oldData);
+        const afterIni = ini.parse(newData);
 
         return {
-          before: beforeIni,
-          after: afterIni,
+          beforeData: beforeIni,
+          afterData: afterIni,
         };
       },
     },
