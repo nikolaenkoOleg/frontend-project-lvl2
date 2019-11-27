@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import compareFiles from '../gendiff';
+import parse from '../filesParser';
 
 export default () => {
   program
@@ -11,7 +11,7 @@ export default () => {
     .option('-f, --format [type]', 'output format: plain, json, default', 'default')
     .arguments('<firstConfig> <secondConfig>')
     .action((firstConfig, secondConfig) => {
-      console.log(compareFiles(firstConfig, secondConfig, program.format));
+      console.log(parse(firstConfig, secondConfig, program.format));
     });
 
   program.parse(process.argv);
