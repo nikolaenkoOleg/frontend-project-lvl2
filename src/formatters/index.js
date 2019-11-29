@@ -2,11 +2,11 @@ import astBuilder from '../astBuilder';
 import plainRender from './plainRender';
 import jsonRender from './jsonRender';
 import treeRender from './treeRender';
-import parse from '../filesParser';
+import parse from '..';
 
 export default (beforePath, afterPath, output) => {
-  const { before, after } = parse(beforePath, afterPath);
-  const ast = astBuilder(before, after);
+  const { beforeData, afterData } = parse(beforePath, afterPath);
+  const ast = astBuilder(beforeData, afterData);
   switch (output) {
     case 'plain':
       return plainRender(ast);
