@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import parseFile from './fileParser';
+import parseFile from './parser';
 
 const readFile = (pathToFile) => {
   const fullPath = path.resolve(pathToFile);

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const getNode = (name, beforeValue = '', afterValue = '', children = '', status) => ({
+const getNode = (name, beforeValue = '', afterValue = '', children, status) => ({
   name,
   beforeValue,
   afterValue,
@@ -12,42 +12,44 @@ const getSoloNodeAst = (data) => Object.keys(data).map((key) => getNode(key, dat
 
 
 const buildAst = (beforeData, afterData) => {
-  const keys = Object.keys(beforeData).concat(Object.keys(afterData));
-  const filteredKeys = _.uniqWith(keys, _.isEqual).sort();
+  const keys = _.union(_.keys(beforeData), _.keys(afterData));
 
-  return filteredKeys.map((key) => {
+  return keys.map((key) => {
+    const beforeValue = beforeData[key];
+    const afterValue = afterData[key];
+
     if (_.has(beforeData, key) && _.has(afterData, key)) {
-      if (_.isObject(beforeData[key]) && _.isObject(afterData[key])) {
-        return getNode(key, '', '', buildAst(beforeData[key], afterData[key]), 'unchanged');
+      if (_.isObject(beforeValue) && _.isObject(afterValue)) {
+        return getNode(key, '', '', buildAst(beforeValue, afterValue), 'unchanged');
       }
 
-      if (_.isObject(beforeData[key]) && !_.isObject(afterData[key])) {
-        return getNode(key, getSoloNodeAst(beforeData[key]), afterData[key], '', 'value type changed');
+      if (_.isObject(beforeValue) && !_.isObject(afterValue)) {
+        return getNode(key, getSoloNodeAst(beforeValue), afterValue, '', 'edited');
       }
 
       if (!_.isObject(beforeData[key]) && _.isObject(afterData[key])) {
-        return getNode(key, beforeData[key], getSoloNodeAst(afterData[key]), '', 'value type changed');
+        return getNode(key, beforeValue, getSoloNodeAst(afterValue), '', 'edited');
       }
 
-      if (beforeData[key] === afterData[key]) {
+      if (beforeValue === afterValue) {
         return getNode(key, beforeData[key], afterData[key], '', 'unchanged');
       }
 
-      return getNode(key, beforeData[key], afterData[key], '', 'edited');
+      return getNode(key, beforeValue, afterValue, '', 'edited');
     }
 
     if (_.has(beforeData, key) && !_.has(afterData, key)) {
-      if (_.isObject(beforeData[key])) {
-        return getNode(key, '', '', getSoloNodeAst(beforeData[key]), 'deleted');
+      if (_.isObject(beforeValue)) {
+        return getNode(key, getSoloNodeAst(beforeValue), '', '', 'deleted');
       }
-      return getNode(key, beforeData[key], afterData[key], '', 'deleted');
+      return getNode(key, beforeValue, afterValue, '', 'deleted');
     }
 
     if (!_.has(beforeData, key) && _.has(afterData, key)) {
-      if (_.isObject(afterData[key])) {
-        return getNode(key, '', '', getSoloNodeAst(afterData[key]), 'added');
+      if (_.isObject(afterValue)) {
+        return getNode(key, '', getSoloNodeAst(afterValue), '', 'added');
       }
-      return getNode(key, beforeData[key], afterData[key], '', 'added');
+      return getNode(key, beforeValue, afterValue, '', 'added');
     }
 
     return null;

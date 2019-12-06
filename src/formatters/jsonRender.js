@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const getkey = (name, sign) => {
   switch (sign) {
     case 'added':
@@ -5,7 +7,7 @@ const getkey = (name, sign) => {
     case 'deleted':
       return `- ${name}`;
     case 'unchanged':
-      return `  ${name}`;
+      return `${name}`;
     default:
       return null;
   }
@@ -19,7 +21,7 @@ const getJsonFromAst = (ast) => {
     children,
     status,
   }) => {
-    if (children) {
+    if (_.isObject(children)) {
       switch (status) {
         case 'added':
           acc[getkey(name, 'added')] = render(children);
@@ -34,36 +36,38 @@ const getJsonFromAst = (ast) => {
           break;
       }
     }
-
     switch (status) {
-      case 'value type changed':
-        if (typeof beforeValue === 'object') {
+      case 'unchanged':
+        acc[getkey(name, 'unchanged')] = beforeValue;
+        return acc;
+      case 'edited':
+        if (_.isObject(beforeValue)) {
           acc[getkey(name, 'deleted')] = render(beforeValue);
           acc[getkey(name, 'added')] = afterValue;
-
           return acc;
         }
 
-        acc[getkey(name, 'deleted')] = beforeValue;
-        acc[getkey(name, 'added')] = render(afterValue);
-
-        return acc;
-      case 'unchanged':
-        acc[getkey(name, 'unchanged')] = beforeValue;
-
-        return acc;
-      case 'edited':
+        if (_.isObject(afterValue)) {
+          acc[getkey(name, 'deleted')] = beforeValue;
+          acc[getkey(name, 'added')] = render(afterValue);
+          return acc;
+        }
         acc[getkey(name, 'deleted')] = beforeValue;
         acc[getkey(name, 'added')] = afterValue;
-
         return acc;
       case 'deleted':
+        if (_.isObject(beforeValue)) {
+          acc[getkey(name, 'deleted')] = render(beforeValue);
+          return acc;
+        }
         acc[getkey(name, 'deleted')] = beforeValue;
-
         return acc;
       case 'added':
+        if (_.isObject(afterValue)) {
+          acc[getkey(name, 'added')] = render(afterValue);
+          return acc;
+        }
         acc[getkey(name, 'added')] = afterValue;
-
         return acc;
       default:
         break;
@@ -73,7 +77,7 @@ const getJsonFromAst = (ast) => {
   }, {});
 
 
-  return JSON.stringify(render(ast), null, 2);
+  return JSON.stringify(render(ast));
 };
 
 export default getJsonFromAst;

@@ -17,13 +17,15 @@ export default (ast) => {
     }
 
     switch (status) {
-      case 'value type changed':
-        if (typeof afterValue === 'object') {
+      case 'edited':
+        if (_.isObject(beforeValue)) {
+          return [...acc, `Property '${path}${name}' was updated. From [complex value] to ${afterValue}`];
+        }
+
+        if (_.isObject(afterValue)) {
           return [...acc, `Property '${path}${name}' was updated. From ${beforeValue} to [complex value]`];
         }
 
-        return [...acc, `Property '${path}${name}' was updated. From [complex value] to ${afterValue}`];
-      case 'edited':
         return [...acc, `Property '${path}${name}' was updated. From ${beforeValue} to ${afterValue}.`];
       case 'unchanged':
         return acc;

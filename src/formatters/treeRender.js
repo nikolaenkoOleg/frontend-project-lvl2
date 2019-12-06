@@ -9,86 +9,71 @@ const getTabs = (spacesCount) => {
   return tabs;
 };
 
-const renderActions = [
-  {
-    check: (status) => status === 'unchanged',
-    renderAction: (node, render, spaces) => {
-      if (node.children) {
-        const name = `${getTabs(spaces)}  ${node.name}: {`;
-        const processedChildren = render(node.children, spaces + 4);
-        const closingBracket = `${getTabs(spaces + 2)}}`;
+const mapping = {
+  unchanged: (node, render, spaces) => {
+    if (_.isObject(node.children)) {
+      const name = `${getTabs(spaces)}  ${node.name}: {`;
+      const processedChildren = render(node.children, spaces + 4);
+      const closingBracket = `${getTabs(spaces + 2)}}`;
 
-        return [name, processedChildren, closingBracket];
-      }
-      return `${getTabs(spaces)}  ${node.name}: ${node.beforeValue}`;
-    },
+      return [name, processedChildren, closingBracket];
+    }
+    return `${getTabs(spaces)}  ${node.name}: ${node.beforeValue}`;
   },
-  {
-    check: (status) => status === 'added',
-    renderAction: (node, render, spaces) => {
-      if (node.children) {
-        const name = `${getTabs(spaces)}+ ${node.name}: {`;
-        const processedChildren = render(node.children, spaces + 4);
-        const closingBracket = `${getTabs(spaces + 2)}}`;
+  added: (node, render, spaces) => {
+    if (_.isObject(node.afterValue)) {
+      const addedKey = `${getTabs(spaces)}+ ${node.name}: {`;
+      const addedData = render(node.afterValue, spaces + 4);
+      const closingBracket = `${getTabs(spaces + 2)}}`;
 
-        return [name, processedChildren, closingBracket];
-      }
-      return `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
-    },
+      return [addedKey, addedData, closingBracket];
+    }
+    return `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
   },
-  {
-    check: (status) => status === 'deleted',
-    renderAction: (node, render, spaces) => {
-      if (node.children) {
-        const name = `${getTabs(spaces)}- ${node.name}: {`;
-        const processedChildren = render(node.children, spaces + 4);
-        const closingBracket = `${getTabs(spaces + 2)}}`;
+  deleted: (node, render, spaces) => {
+    if (_.isObject(node.beforeValue)) {
+      const deletedKey = `${getTabs(spaces)}- ${node.name}: {`;
+      const deletedData = render(node.beforeValue, spaces + 4);
+      const closingBracket = `${getTabs(spaces + 2)}}`;
 
-        return [name, processedChildren, closingBracket];
-      }
-      return `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
-    },
+      return [deletedKey, deletedData, closingBracket];
+    }
+    return `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
   },
-  {
-    check: (status) => status === 'edited',
-    renderAction: (node, render, spaces) => {
-      const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+  edited: (node, render, spaces) => {
+    const closingBracket = `${getTabs(spaces + 2)}}`;
+
+    if (_.isObject(node.beforeValue)) {
+      const deletedKey = `${getTabs(spaces)}- ${node.name}: {`;
+      const deletedData = render(node.beforeValue, spaces + 4);
       const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
 
-      return [removedData, addedData];
-    },
+      return [deletedKey, deletedData, addedData, closingBracket];
+    }
+
+    if (_.isObject(node.afterValue)) {
+      const beforeData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+      const addedKey = `${getTabs(spaces)}+ ${node.name}: {`;
+      const addedData = render(node.afterValue, spaces + 4);
+
+      return [beforeData, addedKey, addedData, closingBracket];
+    }
+
+    const deletedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
+    const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
+
+    return [deletedData, addedData];
   },
-  {
-    check: (status) => status === 'value type changed',
-    renderAction: (node, render, spaces) => {
-      const closingBracket = `${getTabs(spaces + 2)}}`;
-      if (_.isObject(node.beforeValue)) {
-        const removedName = `${getTabs(spaces)}- ${node.name}: {`;
-        const processedChildren = render(node.beforeValue, spaces + 4);
-        const addedData = `${getTabs(spaces)}+ ${node.name}: ${node.afterValue}`;
-
-        return [removedName, processedChildren, closingBracket, addedData];
-      }
-      const removedData = `${getTabs(spaces)}- ${node.name}: ${node.beforeValue}`;
-      const addedName = `${getTabs(spaces)}+ ${node.name}: {`;
-      const processedChildren = render(node.afterValue, spaces + 4);
-
-      return [removedData, addedName, processedChildren, closingBracket];
-    },
-  },
-];
-
-const getRenderAction = (status) => renderActions.find(({ check }) => check(status));
+};
 
 export default (ast) => {
   const render = (tree, spaces) => tree.reduce((acc, node) => {
-    const { renderAction } = getRenderAction(node.status);
-    const lines = renderAction(node, render, spaces);
+    const lines = mapping[node.status](node, render, spaces);
 
     return [...acc, lines];
   }, []);
 
-  const tree = [...'{', ...render(ast, 2), ...'}'];
+  const tree = ['{', ...render(ast, 2), '}'];
   const result = _.flattenDeep(tree).join('\n');
 
   return result;
