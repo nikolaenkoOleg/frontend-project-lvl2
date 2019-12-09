@@ -9,7 +9,7 @@ const getTabs = (spacesCount) => {
   return tabs;
 };
 
-const mapping = {
+const rendering = {
   unchanged: (node, render, spaces) => {
     if (_.isObject(node.children)) {
       const name = `${getTabs(spaces)}  ${node.name}: {`;
@@ -68,7 +68,7 @@ const mapping = {
 
 export default (ast) => {
   const render = (tree, spaces) => tree.reduce((acc, node) => {
-    const lines = mapping[node.status](node, render, spaces);
+    const lines = rendering[node.status](node, render, spaces);
 
     return [...acc, lines];
   }, []);

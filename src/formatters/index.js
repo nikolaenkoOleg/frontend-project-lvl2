@@ -4,17 +4,16 @@ import jsonRender from './jsonRender';
 import treeRender from './treeRender';
 import parse from '..';
 
+const render = {
+  plain: plainRender,
+  json: jsonRender,
+  tree: treeRender,
+};
+
 export default (beforePath, afterPath, output) => {
   const { beforeData, afterData } = parse(beforePath, afterPath);
   const ast = astBuilder(beforeData, afterData);
-  switch (output) {
-    case 'plain':
-      return plainRender(ast);
-    case 'json':
-      return jsonRender(ast);
-    case 'tree':
-      return treeRender(ast);
-    default:
-      return null;
-  }
+  const diff = render[output](ast);
+
+  return diff;
 };

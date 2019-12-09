@@ -10,7 +10,6 @@ const getNode = (name, beforeValue = '', afterValue = '', children, status) => (
 
 const getSoloNodeAst = (data) => Object.keys(data).map((key) => getNode(key, data[key], '', '', 'unchanged'));
 
-
 const buildAst = (beforeData, afterData) => {
   const keys = _.union(_.keys(beforeData), _.keys(afterData));
 

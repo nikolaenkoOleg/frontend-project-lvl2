@@ -1,17 +1,12 @@
 import _ from 'lodash';
 
-const getkey = (name, sign) => {
-  switch (sign) {
-    case 'added':
-      return `+ ${name}`;
-    case 'deleted':
-      return `- ${name}`;
-    case 'unchanged':
-      return `${name}`;
-    default:
-      return null;
-  }
+const mapping = {
+  added: (key) => `+ ${key}`,
+  deleted: (key) => `- ${key}`,
+  unchanged: (key) => `${key}`,
 };
+
+const getkey = (key, type) => mapping[type](key);
 
 const getJsonFromAst = (ast) => {
   const render = (tree) => tree.reduce((acc, {
