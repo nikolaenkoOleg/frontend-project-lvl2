@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import parse from '../formatters';
+import parse from '..';
 
 export default () => {
   program

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import parseFile from './parser';
+import parse from './parser';
+import getDiff from './formatters';
 
 const readFile = (pathToFile) => {
   const fullPath = path.resolve(pathToFile);
@@ -9,13 +10,15 @@ const readFile = (pathToFile) => {
   return fileContent;
 };
 
-export default (pathToBeforeFile, pathToAfterFile) => {
+export default (pathToBeforeFile, pathToAfterFile, output = 'tree') => {
   const beforeContent = readFile(pathToBeforeFile);
   const afterContent = readFile(pathToAfterFile);
   const fileExtension = path.extname(pathToAfterFile).replace('.', '');
 
-  const beforeData = parseFile(beforeContent, fileExtension);
-  const afterData = parseFile(afterContent, fileExtension);
+  const beforeData = parse(beforeContent, fileExtension);
+  const afterData = parse(afterContent, fileExtension);
 
-  return { beforeData, afterData };
+  const diff = getDiff(beforeData, afterData, output);
+
+  return diff;
 };

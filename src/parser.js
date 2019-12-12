@@ -7,4 +7,4 @@ const parser = {
   ini: ini.parse,
 };
 
-export default (fileContent, extname) => parser[extname](fileContent);
+export default (сontent, extname) => parser[extname](сontent);
