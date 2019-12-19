@@ -1,47 +1,42 @@
 import _ from 'lodash';
 
+const getPath = (path, name) => `${path}${name}.`;
+
 export default (ast) => {
-  const getPath = (path, name) => `${path}${name}.`;
-
   const render = (tree, path) => tree.reduce((acc, {
-    name,
-    beforeValue,
-    afterValue,
+    key,
+    value,
     children,
-    status,
+    type,
   }) => {
-    if (children.length > 1) {
-      const newPath = getPath(path, name);
-
-      return [...acc, render(children, newPath)];
+    if (type === 'children') {
+      return [...acc, render(children, getPath(path, key))];
     }
 
-    switch (status) {
+    switch (type) {
       case 'edited':
-        if (_.isObject(beforeValue)) {
-          return [...acc, `Property '${path}${name}' was updated. From [complex value] to ${afterValue}`];
+        if (_.isObject(value.before)) {
+          return [...acc, `Property '${path}${key}' was updated. From [complex value] to ${value.after}`];
         }
 
-        if (_.isObject(afterValue)) {
-          return [...acc, `Property '${path}${name}' was updated. From ${beforeValue} to [complex value]`];
+        if (_.isObject(value.after)) {
+          return [...acc, `Property '${path}${key}' was updated. From ${value.before} to [complex value]`];
         }
 
-        return [...acc, `Property '${path}${name}' was updated. From ${beforeValue} to ${afterValue}.`];
+        return [...acc, `Property '${path}${key}' was updated. From ${value.before} to ${value.after}.`];
       case 'unchanged':
         return acc;
       case 'deleted':
-        return [...acc, `Property '${path}${name}' was removed.`];
+        return [...acc, `Property '${path}${key}' was removed.`];
       case 'added':
-        if (typeof afterValue === 'object' || children) {
-          return [...acc, `Property '${path}${name}' was added with value: [complex value].`];
+        if (_.isPlainObject(value)) {
+          return [...acc, `Property '${path}${key}' was added with value: [complex value].`];
         }
 
-        return [...acc, `Property '${path}${name}' was added with value: ${afterValue}.`];
+        return [...acc, `Property '${path}${key}' was added with value: ${value}.`];
       default:
-        break;
+        return acc;
     }
-
-    return acc;
   }, []);
 
   return _.flattenDeep(render(ast, '')).join('\n');

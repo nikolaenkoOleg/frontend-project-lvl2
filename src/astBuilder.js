@@ -1,57 +1,47 @@
 import _ from 'lodash';
 
-const getNode = (name, beforeValue = '', afterValue = '', children, status) => ({
-  name,
-  beforeValue,
-  afterValue,
-  children,
-  status,
-});
+const typeProcesses = [
+  {
+    type: 'children',
+    check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
+      && beforeData[key] instanceof Object && afterData[key] instanceof Object),
+    process: (beforeData, afterData, func) => func(beforeData, afterData),
+  },
+  {
+    type: 'unchanged',
+    check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
+      && beforeData[key] === afterData[key]),
+    process: (beforeData) => beforeData,
+  },
+  {
+    type: 'edited',
+    check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
+      && beforeData[key] !== afterData[key]),
+    process: (beforeData, afterData) => ({ before: beforeData, after: afterData }),
+  },
+  {
+    type: 'added',
+    check: (beforeData, afterData, key) => (!_.has(beforeData, key) && _.has(afterData, key)),
+    process: (_beforeData, afterData) => afterData,
+  },
+  {
+    type: 'deleted',
+    check: (beforeData, afterData, key) => (_.has(beforeData, key) && !_.has(afterData, key)),
+    process: (beforeData) => beforeData,
+  },
+];
 
-const getSoloNodeAst = (data) => Object.keys(data).map((key) => getNode(key, data[key], '', '', 'unchanged'));
+const getTypeAction = (first, second, key) => typeProcesses
+  .find(({ check }) => check(first, second, key));
 
 const buildAst = (beforeData, afterData) => {
   const keys = _.union(_.keys(beforeData), _.keys(afterData));
 
   return keys.map((key) => {
-    const beforeValue = beforeData[key];
-    const afterValue = afterData[key];
+    const { type, process } = getTypeAction(beforeData, afterData, key);
+    const value = process(beforeData[key], afterData[key], buildAst);
 
-    if (_.has(beforeData, key) && _.has(afterData, key)) {
-      if (_.isObject(beforeValue) && _.isObject(afterValue)) {
-        return getNode(key, '', '', buildAst(beforeValue, afterValue), 'unchanged');
-      }
-
-      if (_.isObject(beforeValue) && !_.isObject(afterValue)) {
-        return getNode(key, getSoloNodeAst(beforeValue), afterValue, '', 'edited');
-      }
-
-      if (!_.isObject(beforeData[key]) && _.isObject(afterData[key])) {
-        return getNode(key, beforeValue, getSoloNodeAst(afterValue), '', 'edited');
-      }
-
-      if (beforeValue === afterValue) {
-        return getNode(key, beforeData[key], afterData[key], '', 'unchanged');
-      }
-
-      return getNode(key, beforeValue, afterValue, '', 'edited');
-    }
-
-    if (_.has(beforeData, key) && !_.has(afterData, key)) {
-      if (_.isObject(beforeValue)) {
-        return getNode(key, getSoloNodeAst(beforeValue), '', '', 'deleted');
-      }
-      return getNode(key, beforeValue, afterValue, '', 'deleted');
-    }
-
-    if (!_.has(beforeData, key) && _.has(afterData, key)) {
-      if (_.isObject(afterValue)) {
-        return getNode(key, '', getSoloNodeAst(afterValue), '', 'added');
-      }
-      return getNode(key, beforeValue, afterValue, '', 'added');
-    }
-
-    return null;
+    return value instanceof Array ? { key, children: value, type } : { key, value, type };
   });
 };
 
