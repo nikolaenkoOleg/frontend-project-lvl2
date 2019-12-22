@@ -41,7 +41,7 @@ const buildAst = (beforeData, afterData) => {
     const { type, process } = getTypeAction(beforeData, afterData, key);
     const value = process(beforeData[key], afterData[key], buildAst);
 
-    return value instanceof Array ? { key, children: value, type } : { key, value, type };
+    return { key, value, type };
   });
 };
 

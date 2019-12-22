@@ -3,7 +3,7 @@
 import program from 'commander';
 import parse from '..';
 
-const term = () => {
+const gendiff = () => {
   program
     .version('1.0.0')
     .description('Compares two configuration files and shows a difference.')
@@ -17,4 +17,4 @@ const term = () => {
   program.parse(process.argv);
 };
 
-term();
+gendiff();

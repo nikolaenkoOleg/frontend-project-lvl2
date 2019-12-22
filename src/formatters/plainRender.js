@@ -6,11 +6,10 @@ export default (ast) => {
   const render = (tree, path) => tree.reduce((acc, {
     key,
     value,
-    children,
     type,
   }) => {
     if (type === 'children') {
-      return [...acc, render(children, getPath(path, key))];
+      return [...acc, render(value, getPath(path, key))];
     }
 
     switch (type) {
