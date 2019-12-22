@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import parse from '../filesParser';
+import parse from '../formatters/index';
 
-export default () => {
+const term = () => {
   program
     .version('1.0.0')
     .description('Compares two configuration files and shows a difference.')
@@ -16,3 +16,5 @@ export default () => {
 
   program.parse(process.argv);
 };
+
+term();

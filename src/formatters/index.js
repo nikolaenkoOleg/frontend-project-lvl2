@@ -7,6 +7,7 @@ import parse from '..';
 export default (beforePath, afterPath, output) => {
   const { beforeData, afterData } = parse(beforePath, afterPath);
   const ast = astBuilder(beforeData, afterData);
+  console.log(ast[ast.length - 1]);
   switch (output) {
     case 'plain':
       return plainRender(ast);
