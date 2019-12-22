@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import makeDiff from '../src/formatters';
+import makeDiff from '../src';
 
 const getFilePath = (fileName) => path.join(__dirname, `../__fixtures__/${fileName}`);
 
