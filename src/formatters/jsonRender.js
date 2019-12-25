@@ -2,10 +2,9 @@ export default (ast) => {
   const parse = (tree) => tree.reduce((acc, {
     key,
     value,
-    children,
     type,
   }) => {
-    acc[key] = { value: type === 'children' ? parse(children) : value, type };
+    acc[key] = { value: type === 'children' ? parse(value) : value, type };
 
     return acc;
   }, {});
