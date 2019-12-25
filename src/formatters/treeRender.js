@@ -41,7 +41,7 @@ const rendering = {
   deleted: (node, _render, spaces) => stringify(node.value, node.key, spaces, '- '),
   children: (node, render, spaces) => {
     const key = `${getTabs(spaces)}  ${node.key}: {`;
-    const data = render(node.value, spaces + 4);
+    const data = render(node.children, spaces + 4);
     const closingBracket = `${getTabs(spaces + 2)}}`;
 
     return [key, data, closingBracket];

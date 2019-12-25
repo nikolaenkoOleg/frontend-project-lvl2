@@ -7,9 +7,10 @@ export default (ast) => {
     key,
     value,
     type,
+    children,
   }) => {
     if (type === 'children') {
-      return [...acc, render(value, getPath(path, key))];
+      return [...acc, render(children, getPath(path, key))];
     }
 
     switch (type) {

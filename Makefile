@@ -2,7 +2,7 @@ install:
 	npm install
 
 run:
-	npx babel-node src/bin/gendiff.js -f tree ./__fixtures__/tree/before.json ./__fixtures__/tree/after.json
+	npx babel-node src/bin/gendiff.js -f json ./__fixtures__/tree/before.json ./__fixtures__/tree/after.json
 
 install-deps:
 	npm install

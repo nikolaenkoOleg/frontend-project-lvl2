@@ -3,8 +3,9 @@ export default (ast) => {
     key,
     value,
     type,
+    children,
   }) => {
-    acc[key] = { value: type === 'children' ? parse(value) : value, type };
+    acc[key] = { value: type === 'children' ? parse(children) : value, type };
 
     return acc;
   }, {});
