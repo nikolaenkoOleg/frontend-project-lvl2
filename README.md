@@ -39,4 +39,4 @@ Plain output format example:
 [![asciicast](https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj.svg)](https://asciinema.org/a/pq1AqkCF34aKoQZR1RyiWHGbj)
 
 Json output format example:
-[![asciicast](https://asciinema.org/a/ENlC5ty305dIJsruDiOKeHjN1.svg)](https://asciinema.org/a/ENlC5ty305dIJsruDiOKeHjN1)
+[![asciicast](https://asciinema.org/a/ENlC5ty305dIJsruDiOKeHjN1.svg)](https://asciinema.org/a/5U4L1XeHt2S5rBzt15xNUMYx3)
