@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 const typeProcesses = [
   {
-    type: 'children',
+    type: 'nested',
     content: 'children',
     check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
       && beforeData[key] instanceof Object && afterData[key] instanceof Object),

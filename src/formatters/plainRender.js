@@ -9,7 +9,7 @@ export default (ast) => {
     type,
     children,
   }) => {
-    if (type === 'children') {
+    if (type === 'nested') {
       return [...acc, render(children, getPath(path, key))];
     }
 

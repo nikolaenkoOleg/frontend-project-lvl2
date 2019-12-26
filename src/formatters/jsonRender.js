@@ -5,8 +5,11 @@ export default (ast) => {
     type,
     children,
   }) => {
-    acc[key] = { value: type === 'children' ? parse(children) : value, type };
+    acc[key] = { type, value };
 
+    if (type === 'nested') {
+      acc[key] = { type, children: parse(children) };
+    }
     return acc;
   }, {});
 
