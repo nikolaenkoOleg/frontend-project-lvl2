@@ -3,36 +3,31 @@ import _ from 'lodash';
 const typeProcesses = [
   {
     type: 'nested',
-    content: 'children',
     check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
       && beforeData[key] instanceof Object && afterData[key] instanceof Object),
-    process: (beforeData, afterData, func) => func(beforeData, afterData),
+    process: (beforeData, afterData, func) => ({ value: '', children: func(beforeData, afterData) }),
   },
   {
     type: 'unchanged',
-    content: 'value',
     check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
       && beforeData[key] === afterData[key]),
-    process: (beforeData) => beforeData,
+    process: (beforeData) => ({ value: beforeData, children: '' }),
   },
   {
     type: 'edited',
-    content: 'value',
     check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
       && beforeData[key] !== afterData[key]),
-    process: (beforeData, afterData) => ({ before: beforeData, after: afterData }),
+    process: (beforeData, afterData) => ({ value: { before: beforeData, after: afterData }, children: '' }),
   },
   {
     type: 'added',
-    content: 'value',
     check: (beforeData, afterData, key) => (!_.has(beforeData, key) && _.has(afterData, key)),
-    process: (_beforeData, afterData) => afterData,
+    process: (_beforeData, afterData) => ({ value: afterData, children: '' }),
   },
   {
     type: 'deleted',
-    content: 'value',
     check: (beforeData, afterData, key) => (_.has(beforeData, key) && !_.has(afterData, key)),
-    process: (beforeData) => beforeData,
+    process: (beforeData) => ({ value: beforeData, children: '' }),
   },
 ];
 
@@ -42,12 +37,14 @@ const getTypeAction = (first, second, key) => typeProcesses
 const buildAst = (beforeData, afterData) => {
   const keys = _.union(_.keys(beforeData), _.keys(afterData));
   return keys.map((key) => {
-    const { type, content, process } = getTypeAction(beforeData, afterData, key);
+    const { type, process } = getTypeAction(beforeData, afterData, key);
+    const { value, children } = process(beforeData[key], afterData[key], buildAst);
 
     return {
       key,
+      value,
       type,
-      [content]: process(beforeData[key], afterData[key], buildAst),
+      children,
     };
   });
 };
