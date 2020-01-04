@@ -15,15 +15,15 @@ export default (ast) => {
 
     switch (type) {
       case 'edited':
-        if (_.isObject(value.before)) {
-          return [...acc, `Property '${path}${key}' was updated. From [complex value] to ${value.after}`];
+        if (_.isObject(value[0])) {
+          return [...acc, `Property '${path}${key}' was updated. From [complex value] to ${value[1]}`];
         }
 
-        if (_.isObject(value.after)) {
-          return [...acc, `Property '${path}${key}' was updated. From ${value.before} to [complex value]`];
+        if (_.isObject(value[1])) {
+          return [...acc, `Property '${path}${key}' was updated. From ${value[0]} to [complex value]`];
         }
 
-        return [...acc, `Property '${path}${key}' was updated. From ${value.before} to ${value.after}.`];
+        return [...acc, `Property '${path}${key}' was updated. From ${value[0]} to ${value[1]}.`];
       case 'unchanged':
         return acc;
       case 'deleted':

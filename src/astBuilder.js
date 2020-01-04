@@ -17,7 +17,7 @@ const typeProcesses = [
     type: 'edited',
     check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
       && beforeData[key] !== afterData[key]),
-    process: (beforeData, afterData) => ({ value: { before: beforeData, after: afterData } }),
+    process: (beforeData, afterData) => ({ value: [beforeData, afterData] }),
   },
   {
     type: 'added',
@@ -38,14 +38,9 @@ const buildAst = (beforeData, afterData) => {
   const keys = _.union(_.keys(beforeData), _.keys(afterData));
   return keys.map((key) => {
     const { type, process } = getTypeAction(beforeData, afterData, key);
-    const { value, children } = process(beforeData[key], afterData[key], buildAst);
-    const isNested = value === undefined;
+    const data = process(beforeData[key], afterData[key], buildAst);
 
-    if (isNested) {
-      return { key, type, children };
-    }
-
-    return { key, type, value };
+    return { key, type, ...data };
   });
 };
 

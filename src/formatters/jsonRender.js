@@ -7,9 +7,15 @@ export default (ast) => {
   }) => {
     acc[key] = { type, value };
 
+    if (type === 'edited') {
+      const [beforeData, afterData] = value;
+      acc[key] = { type, value: { before: beforeData, after: afterData } };
+    }
+
     if (type === 'nested') {
       acc[key] = { type, children: parse(children) };
     }
+
     return acc;
   }, {});
 

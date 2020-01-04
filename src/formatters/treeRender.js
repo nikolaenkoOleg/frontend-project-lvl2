@@ -48,8 +48,9 @@ const rendering = {
   },
   edited: (node, _render, spaces) => {
     const { key, value } = node;
-    const deletedData = stringify(value.before, key, spaces, '- ');
-    const addedData = stringify(value.after, key, spaces, '+ ');
+    const [beforeData, afterData] = value;
+    const deletedData = stringify(beforeData, key, spaces, '- ');
+    const addedData = stringify(afterData, key, spaces, '+ ');
 
     return [deletedData, addedData];
   },
