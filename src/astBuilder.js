@@ -17,7 +17,7 @@ const typeProcesses = [
     type: 'edited',
     check: (beforeData, afterData, key) => (_.has(beforeData, key) && _.has(afterData, key)
       && beforeData[key] !== afterData[key]),
-    process: (beforeData, afterData) => ({ value: [beforeData, afterData] }),
+    process: (beforeData, afterData) => ({ oldValue: beforeData, newValue: afterData }),
   },
   {
     type: 'added',

@@ -4,19 +4,20 @@ export default (ast) => {
     value,
     type,
     children,
+    oldValue,
+    newValue,
   }) => {
-    acc[key] = { type, value };
-
-    if (type === 'edited') {
-      const [beforeData, afterData] = value;
-      acc[key] = { type, value: { before: beforeData, after: afterData } };
+    switch (type) {
+      case 'edited':
+        acc[key] = { type, oldValue, newValue };
+        return acc;
+      case 'nested':
+        acc[key] = { type, children: parse(children) };
+        return acc;
+      default:
+        acc[key] = { type, value };
+        return acc;
     }
-
-    if (type === 'nested') {
-      acc[key] = { type, children: parse(children) };
-    }
-
-    return acc;
   }, {});
 
   return JSON.stringify(parse(ast));

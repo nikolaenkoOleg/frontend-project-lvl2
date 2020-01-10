@@ -1,13 +1,6 @@
 import _ from 'lodash';
 
-const getTabs = (spacesCount) => {
-  let tabs = '';
-  for (let i = 0; i < spacesCount; i += 1) {
-    tabs = tabs.concat(' ');
-  }
-
-  return tabs;
-};
+const getTabs = (count) => ' '.repeat(count);
 
 const getProcessedValue = (data, spaces, acc) => {
   const keys = Object.keys(data);
@@ -22,17 +15,16 @@ const getProcessedValue = (data, spaces, acc) => {
   });
 };
 
-
 const stringify = (data, key, spaces, sign) => {
-  if (_.isPlainObject(data)) {
-    const name = `${getTabs(spaces)}${sign}${key}: {`;
-    const value = getProcessedValue(data, spaces + 4, '');
-    const bracket = `${getTabs(spaces + 2)}}`;
-
-    return [name, value, bracket];
+  if (!_.isPlainObject(data)) {
+    return `${getTabs(spaces)}${sign}${key}: ${data}`;
   }
 
-  return `${getTabs(spaces)}${sign}${key}: ${data}`;
+  const name = `${getTabs(spaces)}${sign}${key}: {`;
+  const value = getProcessedValue(data, spaces + 4, '');
+  const bracket = `${getTabs(spaces + 2)}}`;
+
+  return [name, value, bracket];
 };
 
 const rendering = {
@@ -47,21 +39,16 @@ const rendering = {
     return [key, data, closingBracket];
   },
   edited: (node, _render, spaces) => {
-    const { key, value } = node;
-    const [beforeData, afterData] = value;
-    const deletedData = stringify(beforeData, key, spaces, '- ');
-    const addedData = stringify(afterData, key, spaces, '+ ');
+    const { key, oldValue, newValue } = node;
+    const deletedData = stringify(oldValue, key, spaces, '- ');
+    const addedData = stringify(newValue, key, spaces, '+ ');
 
     return [deletedData, addedData];
   },
 };
 
 export default (ast) => {
-  const render = (tree, spaces) => tree.reduce((acc, node) => {
-    const value = rendering[node.type](node, render, spaces);
-
-    return [...acc, value];
-  }, []);
+  const render = (tree, spaces) => tree.map((node) => rendering[node.type](node, render, spaces));
 
   const tree = ['{', ...render(ast, 2), '}'];
   const result = _.flattenDeep(tree).join('\n');
