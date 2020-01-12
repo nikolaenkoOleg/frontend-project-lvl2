@@ -15,7 +15,7 @@ const getDiff = (fileType, format, output) => {
 
 const getResult = (fileType) => {
   const resultValuePath = getFilePath(`${fileType}-result.txt`);
-  const result = fs.readFileSync(resultValuePath, 'utf-8').toString();
+  const result = fs.readFileSync(resultValuePath, 'utf-8').toString().trim();
 
   return result;
 };
