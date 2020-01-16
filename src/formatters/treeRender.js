@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 const getTabs = (count) => ' '.repeat(count);
 
-const getProcessedValue = (data, spaces, acc) => {
+const getProcessedData = (data, spaces, acc) => {
   const keys = Object.keys(data);
 
   return keys.map((key) => {
     const value = data[key];
     if (_.isPlainObject(value)) {
-      return getProcessedValue(data[key], spaces + 2, acc);
+      return getProcessedData(data[key], spaces + 2, acc);
     }
 
     return [...acc, `${getTabs(spaces)}  ${key}: ${value}`];
@@ -21,7 +21,7 @@ const stringify = (data, key, spaces, sign) => {
   }
 
   const name = `${getTabs(spaces)}${sign}${key}: {`;
-  const value = getProcessedValue(data, spaces + 4, '');
+  const value = getProcessedData(data, spaces + 4, '');
   const bracket = `${getTabs(spaces + 2)}}`;
 
   return [name, value, bracket];
