@@ -2,29 +2,19 @@ import _ from 'lodash';
 
 const getPath = (path, name) => `${path}${name}.`;
 
-const processValue = (node) => {
-  if (node.value !== undefined) {
-    const value = _.isPlainObject(node.value) ? '[complex value]' : node.value;
-
-    return value;
-  }
-
-  const oldValue = _.isPlainObject(node.oldValue) ? '[complex value]' : node.oldValue;
-  const newValue = _.isPlainObject(node.newValue) ? '[complex value]' : node.newValue;
-
-  return { oldValue, newValue };
-};
+const processValue = (value) => (_.isPlainObject(value) ? '[complex value]' : value);
 
 const mapping = {
   nested: (node, render, path) => render(node.children, getPath(path, node.key)),
   edited: (node, _render, path) => {
-    const { oldValue, newValue } = processValue(node);
+    const oldValue = processValue(node.oldValue);
+    const newValue = processValue(node.newValue);
 
     return `Property '${path}${node.key}' was updated. From ${oldValue} to ${newValue}`;
   },
   deleted: (node, _render, path) => `Property '${path}${node.key}' was removed`,
   added: (node, _render, path) => {
-    const value = processValue(node);
+    const value = processValue(node.value);
 
     return `Property '${path}${node.key}' was added with value: ${value}`;
   },
