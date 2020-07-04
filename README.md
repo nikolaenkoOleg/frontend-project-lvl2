@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/nikolaenkoOleg/frontend-project-lvl2.svg?branch=master)](https://travis-ci.org/nikolaenkoOleg/frontend-project-lvl2)
 
 ##
-В рамках этого учебного проекта я написал программу для сравнения файлов. На вход программа принимает два разных файла в форматах json, ini, yml и на выходе формирует дифф этих двух файлов. Дифф может быть представлен в трех видах - дерево, плоский формат и в формате json. Я поработал с git, npm, eslint, babel, makefile, [Code Climate](https://codeclimate.com/), [Travis](https://travis-ci.org/), тестировал свою программу с помощью jest.
+В рамках этого учебного проекта я написал программу для сравнения файлов. На вход программа принимает два разных файла в форматах json, ini, yml и на выходе формирует дифф этих двух файлов. Дифф может быть представлен в трех видах - дерево, плоский формат и в формате json. Я поработал с git, npm, eslint, babel, makefile, lodash, [Code Climate](https://codeclimate.com/), [Travis](https://travis-ci.org/), тестировал свою программу с помощью jest.
 
 ##
 [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/hexletguides.github.io/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=nodejs-package)
